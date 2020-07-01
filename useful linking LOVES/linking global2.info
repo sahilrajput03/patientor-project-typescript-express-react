@@ -1,0 +1,7 @@
+:: Now you need to install any dependency. Just install in c:\eslint_6.0.0\ project and add the dependency entry yourself to the current project. Though it isn't necessary to add to the package.json file.
+:: The only problem experienced with npm link was when I started using eslint, and now its all solved as I created two global spaces. 1st is the default one, and the second one is designed to work by creating symlink for individual projects to the c:\eslint_6.8.0\node_modules folder. You can see the command in other file in the foder.
+
+
+mklink /d node_modules ..\..\..\..\eslint_6.8.0_node_modules\node_modules
+:: Direct execution doesn't work even when you run the file via context menu's Run as administrator option.
+:: This doesn't required though, you can make a fronend to work with npm link only, along with the editors eslint extension.
