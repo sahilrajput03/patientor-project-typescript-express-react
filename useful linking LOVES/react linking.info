@@ -1,9 +1,0 @@
-1$ npm link eslint-plugin-react @typescript-eslint/eslint-plugin
-2$ npm link react-dom react semantic-ui-react axios @types/axios @types/jest @types/node @types/react @types/react-dom @types/react-router-dom
-3$ npm link semantic-ui-css react-router-dom formik @typescript-eslint/parser eslint-config-react react-scripts typescript
-
-:: 1$ THIS IS HELPFUL TO MAKE EDITORS ESLINT TO WORK.(RESTART AFTERWARDS)
-2$ and 3$ are dependencies required by create-react-app.
-:: You should close VSCODE and start vscode completely to be able to work editors eslint to work actually.
-:: So, whole space is only occupied by the cache produces by react or babel or webpack's cache in node_modules/.cache folder. Its around 10 mb in total though, generated when we start the appp with npm start(react-scripts start)
-:: IMPORTANT NOTE: YOU NEED typescript to be linked locally(from global node_modules), as apps created with create-react-app requires it to run the app. That is bcoz, React says it isn't installed.

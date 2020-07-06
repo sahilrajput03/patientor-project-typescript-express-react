@@ -12,15 +12,16 @@ export interface DiagnoseEntry {
   // comment?: string;//Setting the type of the field as optional.
 }
 
-export type PatientEntrySecured = Omit<PatientEntry, 'ssn'>;
+export type PatientEntrySecuredWithoutSsn = Omit<PatientEntry, 'ssn'>;
 
 export interface PatientEntry {
   id: string;
   name: string;
-  dateOfBirth: string; // Set as optional field
-  ssn: string; // Set as optional field
-  gender: string; // Set as optional field
-  occupation: string; // Set as optional field
+  dateOfBirth: string;
+  ssn: string;
+  gender: string;
+  occupation: string;
+  entry?: Array<string>;
   // visibility: Visibility;
   // comment?: string;//Setting the type of the field as optional.
 }
