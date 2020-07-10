@@ -1,7 +1,45 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Entry {
-
+/* Entries related types below */
+export enum HealthCheckRating {
+  "Healthy" = 0,
+  "LowRisk" = 1,
+  "HighRisk" = 2,
+  "CriticalRisk" = 3
 }
+interface dischargeInterface {
+  date: string;
+  criteria: string;
+}
+interface sickLeaveInterface {
+  startDate: string,
+  endDate: string,
+}
+export type Entry =
+  | HospitalEntry
+  | OccupationalHealthcareEntry
+  | HealthCheckEntry;
+export interface OccupationalHealthcareEntry extends BaseEntry {
+  type: "OccupationalHealthcare"
+  employerName?: string
+  sickLeave?: sickLeaveInterface
+  diagnosisCodes?: Array<string>
+}
+export interface HospitalEntry extends BaseEntry {
+  type: "Hospital"
+  diagnosisCodes: Array<string>
+  discharge?: dischargeInterface
+}
+export interface HealthCheckEntry extends BaseEntry {
+  type: "HealthCheck";
+  healthCheckRating: HealthCheckRating;
+}
+interface BaseEntry {
+  id: string;
+  date: string;
+  specialist: string;
+  description?: string;
+}
+/* Entries related types above */
 
 export interface Patient {
   id: string;
@@ -51,3 +89,9 @@ export enum Gender {
   // }
 
   // Here, Up would have the value 0, Down would have 1, etc.This auto - incrementing behavior is useful for cases where we might not care about the member values themselves, but do care that each value is distinct from other values in the same enum.
+
+// interface EntryProps {
+//   entry: {
+//     type: string
+//   } | undefined
+// }

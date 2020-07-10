@@ -21,6 +21,6 @@
     "resolveJsonModule": true
   },
   "include": [
-    "srcHelpOtherShubhamBansal"
+    "src"
   ]
 }

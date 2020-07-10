@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, Dispatch } from "react";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 
 import { Action } from "./reducer";
 
@@ -13,12 +13,14 @@ export const pintu = 23;
 export type State = {
   //MY TESTING CODE BELOW.!!
   patients: { [id: string]: Patient };
+  diagnosisCodes: Array<Diagnosis>
   // patients: { [id: string]: Patient|undefined };
   // patients: { [id: string]: Map<string, Patient> };
 };
 
 const initialState: State = {
-  patients: {}
+  patients: {},
+  diagnosisCodes:[]
 };
 
 

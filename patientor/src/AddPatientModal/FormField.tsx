@@ -41,16 +41,20 @@ interface TextProps extends FieldProps {
 export const TextField: React.FC<TextProps> = ({
   field,
   label,
-  placeholder
-}) => (
-  <Form.Field>
-    <label>{label}</label>
-    <Field placeholder={placeholder} {...field} />
-    <div style={{ color:'red' }}>
-      <ErrorMessage name={field.name} />
-    </div>
-  </Form.Field>
-);
+  placeholder,
+  form
+}) => {
+    // console.log('form.errors (checking)=>', form.errors)  // This just fulls the console with logs..
+    return (
+      <Form.Field>
+        <label>{label}</label>
+        <Field placeholder={placeholder} {...field} />
+        <div style={{ color: 'red' }}>
+          <ErrorMessage name={field.name} />
+        </div>
+      </Form.Field>
+    );
+  };
 
 /*
   for exercises 9.24.-

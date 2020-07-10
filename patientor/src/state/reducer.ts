@@ -1,5 +1,5 @@
 import { State } from "./state";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 
 //for testing default imports
 // const car = "swift";
@@ -7,6 +7,10 @@ import { Patient } from "../types";
 
 export const setPatientList = (patientListFromApi: Patient[]): Action => ({
   type: "SET_PATIENT_LIST", payload: patientListFromApi
+})
+
+export const setDiagnosesList = (diagnosisCodesFromApi: Diagnosis[]): Action => ({
+  type: "SET_DIAGNOSIS_CODES_LIST", payload: diagnosisCodesFromApi
 })
 
 export type Action =
@@ -21,6 +25,11 @@ export type Action =
   | {
     type: "UPDATE_FULLDETAILS_PATIENT";
     payload: Patient;
+  }
+  |
+  {
+    type: "SET_DIAGNOSIS_CODES_LIST";
+    payload: Diagnosis[]
   }
   ;
 
@@ -53,6 +62,8 @@ export const reducer = (state: State, action: Action): State => {
       };
     case "UPDATE_FULLDETAILS_PATIENT":
       return { ...state, ...action.payload };
+    case "SET_DIAGNOSIS_CODES_LIST":
+      return { ...state, diagnosisCodes: [...action.payload] }
     default:
       return state;
   }
