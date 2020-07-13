@@ -25,34 +25,34 @@ router.post('/:id/entries', (req, res: InterfaceResponse) => {
   console.log('helllooo');
   const body = req.body as Entry;
   const currentPatient = diagnosesService.getPatientEntries().find(p => p.id === req.params.id);
-  if (!currentPatient) return res.send("Invalid patient id in the url params. :((");
+  if (!currentPatient) return res.send("Invalid patient id in the url params. :( No match with given id found actually.)");
   if (!(isString(body.type) && isString(body.date) && isString(body.specialist)))
-    return res.send("Invalid or missing parameters(type/date/specialist).");
+    return res.send("Invalid(string required) or missing parameters(type/date/specialist).");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const entryToBeSaved: Entry = { date: body.date, specialist: body.specialist } as Entry;
+  let entryToBeSaved: Entry = { date: body.date, specialist: body.specialist } as Entry;
   if (body.description) entryToBeSaved.description = body.description;
   switch (body.type) {
     case "OccupationalHealthcare":
-      const oh_entry: OccupationalHealthcareEntry = { ...entryToBeSaved } as OccupationalHealthcareEntry;
-      if (body.employerName) oh_entry.employerName = body.employerName;
-      if (body.sickLeave) oh_entry.sickLeave = body.sickLeave;
-      if (body.diagnosisCodes) oh_entry.diagnosisCodes = body.diagnosisCodes;
-      return res.send(diagnosesService.addEntryInAPatient(req.params.id, oh_entry));
+      entryToBeSaved = { ...entryToBeSaved } as OccupationalHealthcareEntry;
+      if (body.employerName) entryToBeSaved.employerName = body.employerName;
+      if (body.sickLeave) entryToBeSaved.sickLeave = body.sickLeave;
+      if (body.diagnosisCodes) entryToBeSaved.diagnosisCodes = body.diagnosisCodes;
+      return res.send(diagnosesService.addEntryInAPatient(req.params.id, entryToBeSaved));
 
     case "Hospital":
-      const h_entry: HospitalEntry = { ...entryToBeSaved } as HospitalEntry;
+      entryToBeSaved = { ...entryToBeSaved } as HospitalEntry;
       if (!body.diagnosisCodes || isString(body.diagnosisCodes))
-        return res.send("diagnosisCodes field invalid/missing from the entry data");
-      h_entry.diagnosisCodes = body.diagnosisCodes;
-      if (body.discharge) h_entry.discharge = body.discharge;
-      return res.send(diagnosesService.addEntryInAPatient(req.params.id, h_entry));
+        return res.send("diagnosisCodes field invalid(string required)/missing from the entry data");
+      entryToBeSaved.diagnosisCodes = body.diagnosisCodes;
+      if (body.discharge) entryToBeSaved.discharge = body.discharge;
+      return res.send(diagnosesService.addEntryInAPatient(req.params.id, entryToBeSaved));
 
     case "HealthCheck":
-      const hc_entry: HealthCheckEntry = { ...entryToBeSaved } as HealthCheckEntry;
+      entryToBeSaved = { ...entryToBeSaved } as HealthCheckEntry;
       if ((!body.healthCheckRating && body.healthCheckRating !== 0) || body.healthCheckRating > 3 || body.healthCheckRating < 0)
-        return res.send("healthCheckRating field invalid/missing/out of range value in the entry data.");
-      hc_entry.healthCheckRating = body.healthCheckRating;
-      return res.send(diagnosesService.addEntryInAPatient(req.params.id, hc_entry));
+        return res.send("healthCheckRating field invalid(number required)/missing/out of range value in the entry data.");
+      entryToBeSaved.healthCheckRating = body.healthCheckRating;
+      return res.send(diagnosesService.addEntryInAPatient(req.params.id, entryToBeSaved));
 
     default:
       return assertNever(body);
