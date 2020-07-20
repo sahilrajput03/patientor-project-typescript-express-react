@@ -17,19 +17,23 @@ const assertNever = (value: never): never => {
 
 interface InterfaceResponse {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  send: (param: Entry | string) => Response<any>
+  send: (param: Entry | string) => Response<any>,
   //                              This send  ^^^  return  includes all favourable properties which are to be send via express(from http.server)
+  status: (statusCode: number) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    send: (errorCode: string) => Response<any>
+  }
 }
 
 router.post('/:id/entries', (req, res: InterfaceResponse) => {
   console.log('helllooo');
   const body = req.body as Entry;
   const currentPatient = diagnosesService.getPatientEntries().find(p => p.id === req.params.id);
-  if (!currentPatient) return res.send("Invalid patient id in the url params. :( No match with given id found actually.)");
+  if (!currentPatient) return res.status(500).send("Invalid patient id in the url params. :( No match with given id found actually.)");
   if (!(isString(body.type) && isString(body.date) && isString(body.specialist)))
-    return res.send("Invalid(string required) or missing parameters(type/date/specialist).");
+    return res.status(500).send("Invalid(string required) or missing parameters(type/date/specialist).");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  let entryToBeSaved: Entry = { date: body.date, specialist: body.specialist } as Entry;
+  let entryToBeSaved: Entry = { date: body.date, specialist: body.specialist, type: body.type } as Entry;
   if (body.description) entryToBeSaved.description = body.description;
   switch (body.type) {
     case "OccupationalHealthcare":
@@ -42,7 +46,7 @@ router.post('/:id/entries', (req, res: InterfaceResponse) => {
     case "Hospital":
       entryToBeSaved = { ...entryToBeSaved } as HospitalEntry;
       if (!body.diagnosisCodes || isString(body.diagnosisCodes))
-        return res.send("diagnosisCodes field invalid(string required)/missing from the entry data");
+        return res.status(500).send("diagnosisCodes field invalid(string required)/missing from the entry data");
       entryToBeSaved.diagnosisCodes = body.diagnosisCodes;
       if (body.discharge) entryToBeSaved.discharge = body.discharge;
       return res.send(diagnosesService.addEntryInAPatient(req.params.id, entryToBeSaved));
@@ -50,7 +54,7 @@ router.post('/:id/entries', (req, res: InterfaceResponse) => {
     case "HealthCheck":
       entryToBeSaved = { ...entryToBeSaved } as HealthCheckEntry;
       if ((!body.healthCheckRating && body.healthCheckRating !== 0) || body.healthCheckRating > 3 || body.healthCheckRating < 0)
-        return res.send("healthCheckRating field invalid(number required)/missing/out of range value in the entry data.");
+        return res.status(500).send("healthCheckRating field invalid(number required)/missing/out of range value in the entry data.");
       entryToBeSaved.healthCheckRating = body.healthCheckRating;
       return res.send(diagnosesService.addEntryInAPatient(req.params.id, entryToBeSaved));
 
@@ -80,7 +84,17 @@ router.post('/', (req, res) => {
     const newPatientWithId = diagnosesService.addNewPatient(req.body);
     res.send(newPatientWithId);
   } else {
-    res.send('Bad Entry!!');
+    res.status(500).send('Bad Entry!!');
+    //Dealing in frontend
+    //  In frontend you may deal this text via like this:-
+    // try {
+    //   Some axios request to this route.
+    // } catch (err) {
+    //   console.log('errorrrrr.name==>>>', err.name) // Output: Error
+    //   console.log('errorrrrr.message==>>>', err.message) // Output: Request failed with status code 500
+    //   console.log('errorrrrr.response.data==>>>', err.response.data) // Output: my_message
+    // **err.response.data** is anything that we send by =>  res.status(500).end("my_message") or res.status(500).send("my_message")
+    // }
   }
 });
 

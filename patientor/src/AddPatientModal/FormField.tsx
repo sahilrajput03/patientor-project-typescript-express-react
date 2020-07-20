@@ -9,7 +9,7 @@ export type GenderOption = {
   label: string;
 };
 
-// props for select field component
+// TYPESCRIPT: type for select field component
 type SelectFieldProps = {
   name: string;
   label: string;
@@ -21,17 +21,17 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   label,
   options
 }: SelectFieldProps) => (
-  <Form.Field>
-    <label>{label}</label>
-    <Field as="select" name={name} className="ui dropdown">
-      {options.map(option => (
-        <option key={option.value} value={option.value}>
-          {option.label || option.value}
-        </option>
-      ))}
-    </Field>
-  </Form.Field>
-);
+    <Form.Field>{/* This is a SEMANTIC_UI_REACT component. */}
+      <label>{label}</label>{/* <label> is a HTML5 tag. */}
+      <Field as="select" name={name} className="ui dropdown">{/* This is a FORMIK component. */}
+        {options.map(option => (
+          <option key={option.value} value={option.value}>{/* This is html tag for defining dropdown menu options */}
+            {option.label || option.value}
+          </option>
+        ))}
+      </Field>
+    </Form.Field>
+  );
 
 interface TextProps extends FieldProps {
   label: string;
@@ -44,20 +44,22 @@ export const TextField: React.FC<TextProps> = ({
   placeholder,
   form
 }) => {
-    // console.log('form.errors (checking)=>', form.errors)  // This just fulls the console with logs..
-    return (
-      <Form.Field>
-        <label>{label}</label>
-        <Field placeholder={placeholder} {...field} />
-        <div style={{ color: 'red' }}>
-          <ErrorMessage name={field.name} />
-        </div>
-      </Form.Field>
-    );
-  };
+  // console.log('form.errors (checking)=>', form.errors)  // This just fulls the console with logs..YUCKKKKK!!
+  // console.log("field:-", field)
+  /* So, field ^^^^, this basically includes *name* key and *value* key of individual properties we pass to Field (FORMIK component).*/
+  return (
+    <Form.Field>{/* This is a SEMANTIC_UI_REACT component. */}
+      <label>{label}</label>{/* <label> is a HTML5 tag. */}
+      <Field placeholder={placeholder} {...field} />{/* This is a FORMIK component. */}
+      <div style={{ color: 'red' }}>
+        <ErrorMessage name={field.name} />{/* This is a FORMIK component. */}
+      </div>
+    </Form.Field>
+  );
+};
 
 /*
-  for exercises 9.24.-
+  for exercises 9.24 and later :-
 */
 interface NumberProps extends FieldProps {
   label: string;
@@ -70,8 +72,7 @@ export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) =
   <Form.Field>
     <label>{label}</label>
     <Field {...field} type='number' min={min} max={max} />
-
-    <div style={{ color:'red' }}>
+    <div style={{ color: 'red' }}>
       <ErrorMessage name={field.name} />
     </div>
   </Form.Field>

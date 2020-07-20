@@ -1,0 +1,41 @@
+{
+  // "files": [
+  //   "** /*.ts",
+  //   "**/*.tsx"
+  // ],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "react",
+    "@typescript-eslint"
+  ],
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "rules": {
+    "no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "React"
+      }
+    ],
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "semi": [
+      "error",
+      "always"
+    ],
+    "react/prop-types": 0
+    // "@typescript-eslint/no-unused-vars": "off" // This doesn't shut the react-scripts terminal's warnings.
+  }
+}

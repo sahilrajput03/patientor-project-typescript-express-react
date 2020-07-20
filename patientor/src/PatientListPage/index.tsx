@@ -6,31 +6,42 @@ import axios from "axios";
 import { Container, Table, Button, Icon } from "semantic-ui-react";
 import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
 import AddPatientModal from "../AddPatientModal";
-import { Patient } from "../types";
+import { Entry, Patient, HealthCheckEntry, whatsEntryType } from "../types";
 import { apiBaseUrl } from "../constants";
 import HealthRatingBar from "../components/HealthRatingBar";
 import { useStateValue } from "../state";
 import { AssertionError } from "assert";
+import AddEntryModal from '../AddEntryModal'
 
 const PatientListPage: React.FC = () => {
   const [{ patients, diagnosisCodes }, dispatch] = useStateValue();
   // console.log(useStateValue()[0].patients);
+  //Below line is just simple useState hook of react, though this form makes it more clearer to udnerstand what you are reffering iwth useState name convention.
   const [modalOpen, setModalOpen] = React.useState<boolean>(false);
-  //Above line is just simple useState hook of react, though this form makes it more clearer to udnerstand what you are reffering iwth useState name convention.
-  const [error, setError] = React.useState<string | undefined>();
-  const openModal = (): void => setModalOpen(true);
-  const closeModal = (): void => {
+  const openModalPatient = (): void => setModalOpen(true);
+  const closeModalPatient = (): void => {
     setModalOpen(false);
     setError(undefined);
   };
+
+  const [modalOpenEntry, setModalOpenEntry] = React.useState<boolean>(false);
+  const openModalEntry = (): void => setModalOpenEntry(true);
+  const closeModalEntry = (): void => {
+    setModalOpenEntry(false);
+    setError(undefined);
+  };
+
+  const [error, setError] = React.useState<string | undefined>();
+
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
+      //Below line is interesting as we are renaming the destructured variable.
       const { data: newPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients`,
         values
       );
       dispatch({ type: "ADD_PATIENT", payload: newPatient });
-      closeModal();
+      closeModalPatient();
     } catch (err) {
       interface errtype {
         response: {
@@ -44,6 +55,34 @@ const PatientListPage: React.FC = () => {
       setError(e.response.data.error);
     }
   };
+  // type EntryFormValues = Omit<Patient, "id" | "entries">;
+  // type EntryFormValues = Entry | undefined
+
+  // const submitNewEntry = async (values: Entry) => {
+  const submitNewEntry = async (values: Entry) => {
+    console.log("All set of values passed to the submit function is ====> ", values)
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        `${apiBaseUrl}/patients/${values.id}/entries`,
+        values
+      );
+      dispatch({ type: "ADD_ENTRY_OF_PATIENT", payload: { entry: newEntry, patientId: values.id } });
+      // For the above payload typing
+      closeModalEntry();
+    } catch (err) {
+      interface errtype {
+        response: {
+          data: {
+            error: string
+          }
+        }
+      }
+      const e = err as errtype;
+      console.error(e.response.data);
+      setError(e.response.data.error);
+    }
+  };
+
   // const historyChanger = () => {
   //   useHistory().push("komalll");
   // };
@@ -60,10 +99,6 @@ const PatientListPage: React.FC = () => {
     }
   };
 
-  // interface singlePatientProps {
-  //   ...Patient
-  // }
-
   const match = useRouteMatch('/:id') as RoutesInterface;
   // const { id } = useParams<{ id: string }>(); // suggested by the course.
 
@@ -72,7 +107,6 @@ const PatientListPage: React.FC = () => {
       `Unhandled discriminated union member: ${JSON.stringify(value)}`
     );
   };
-
 
   interface interfaceForDiagnoseCode {
     code: string
@@ -104,8 +138,9 @@ const PatientListPage: React.FC = () => {
   }
 
   const SinglePatient = () => {
-    const matchedPatient = Object.keys(patients).includes(match.params.id);
-    if (matchedPatient) {
+    const flagMatchedPatient = Object.keys(patients).includes(match.params.id);
+    // console.log("so in single patient component ==>",match.params.id)
+    if (flagMatchedPatient) {
       // to do here....?>?>>?> for diagonses code for current.
 
       const { name, gender, entries, dateOfBirth, occupation, ssn } = patients[match.params.id];
@@ -114,18 +149,18 @@ const PatientListPage: React.FC = () => {
 
       return (
         <div>
-          <h2>{name}
+          <h1>{name}
             {gender === "male" ? <Icon name='mars' /> : <Icon name='venus' />}
-          </h2>
-          SSN: {ssn}<br></br>
-          Occupation: {occupation}
-          DOB: {dateOfBirth}
+          </h1>
+          <b>SSN</b>: {ssn}<br></br>
+          <b>Occupation</b>: {occupation}<br></br>
+          <b>DOB</b>: {dateOfBirth}
           <br /><br></br>
           <div>
-            <h2>Entries</h2>
+            <h2>Entries of the patient:</h2>
             {entries.map((e, k) => {
               switch (e.type) {
-                case "Hospital":
+                case whatsEntryType.HOSPITAL:
                   return (
                     <div className="ui success message" key={k}>
                       <b>Entry Type: {e.type} <EntryTypeIconFetcher entryType={e.type}></EntryTypeIconFetcher><br></br></b>
@@ -135,7 +170,7 @@ const PatientListPage: React.FC = () => {
                       <br></br>
                     </div>
                   )
-                case "OccupationalHealthcare":
+                case whatsEntryType.OCCUPATIONAL:
                   return (
                     <div className="ui success message" key={k}>
                       <b>Entry Type: {e.type} <EntryTypeIconFetcher entryType={e.type}></EntryTypeIconFetcher><br></br></b>
@@ -145,7 +180,7 @@ const PatientListPage: React.FC = () => {
                       <br></br><br></br>
                     </div>
                   )
-                case "HealthCheck":
+                case whatsEntryType.HEALTHCHECK:
                   return (
                     <div className="ui success message" key={k}>
                       <b>Entry Type: {e.type} <EntryTypeIconFetcher entryType={e.type}></EntryTypeIconFetcher><br></br></b>
@@ -157,11 +192,19 @@ const PatientListPage: React.FC = () => {
                 default:
                   return assertNever(e);
                 // return (<>Add specifics to frontend for "{}" type.</>) // Earlier though code.
-
               }
 
             })}
-          </div>
+          </div><br></br>
+
+          <Button onClick={() => openModalEntry()}>Add New Entry</Button>
+          <AddEntryModal
+            modalOpen={modalOpenEntry}
+            onSubmit={submitNewEntry}
+            error={error}
+            onClose={closeModalEntry}
+            id={match.params.id}
+          />
         </div>
       );
     } else {
@@ -184,7 +227,7 @@ const PatientListPage: React.FC = () => {
         </Route>
         <Route path="/">
           <Container textAlign="center">
-            <h3>Patient list</h3>
+            <h3>Patient List</h3>
           </Container>
           <Table celled>
             <Table.Header>
@@ -212,15 +255,15 @@ const PatientListPage: React.FC = () => {
               ))}
             </Table.Body>
           </Table>
+          <Button onClick={() => openModalPatient()}>Add New Patient</Button>
         </Route>
       </Switch>
       <AddPatientModal
         modalOpen={modalOpen}
         onSubmit={submitNewPatient}
         error={error}
-        onClose={closeModal}
+        onClose={closeModalPatient}
       />
-      <Button onClick={() => openModal()}>Add New Patient</Button>
     </div>
   );
 };

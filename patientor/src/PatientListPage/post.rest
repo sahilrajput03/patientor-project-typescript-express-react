@@ -16,8 +16,8 @@ post http://localhost:3001/api/patients/d2773598-f723-11e9-8f0b-362b9e155667/ent
 Content-Type: application/json
 
 {
-  # "type": "OccupationalHealthcare",
-  "type": "Hospital",
+  "type": "OccupationalHealthcare",
+  # "type": "Hospital",
   "date": "2013-02-23",
   "specialist": "Amar abdullah"
 }

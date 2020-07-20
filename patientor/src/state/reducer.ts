@@ -1,9 +1,5 @@
 import { State } from "./state";
-import { Patient, Diagnosis } from "../types";
-
-//for testing default imports
-// const car = "swift";
-// export default car;
+import { Patient, Diagnosis, Entry } from "../types";
 
 export const setPatientList = (patientListFromApi: Patient[]): Action => ({
   type: "SET_PATIENT_LIST", payload: patientListFromApi
@@ -30,6 +26,14 @@ export type Action =
   {
     type: "SET_DIAGNOSIS_CODES_LIST";
     payload: Diagnosis[]
+  }
+  |
+  {
+    type: "ADD_ENTRY_OF_PATIENT";
+    payload: {
+      entry: Entry,
+      patientId: string
+    }
   }
   ;
 
@@ -64,6 +68,34 @@ export const reducer = (state: State, action: Action): State => {
       return { ...state, ...action.payload };
     case "SET_DIAGNOSIS_CODES_LIST":
       return { ...state, diagnosisCodes: [...action.payload] }
+    case "ADD_ENTRY_OF_PATIENT":
+      // console.log('state=>', state)
+      // console.log('action.payload.id=>', action.payload)
+      // console.log('state.patients[action.payload.id].entries=>', state.patients[action.payload.patientID])
+      switch (action.payload.entry.type) {
+        case "HealthCheck":
+          return {
+            ...state,
+            patients: {
+              ...state.patients,
+              [action.payload.patientId]: {
+                ...state.patients[action.payload.patientId],
+                entries: [
+                  ...state.patients[action.payload.patientId].entries,
+                  action.payload.entry
+                ]
+              }
+            }
+          }
+        case "Hospital":
+          return state
+
+        case "OccupationalHealthcare":
+          return state
+
+        default:
+          return state
+      }
     default:
       return state;
   }

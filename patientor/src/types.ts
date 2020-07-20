@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 /* Entries related types below */
-export enum HealthCheckRating {
+export enum HealthCheckRatingScore {
   "Healthy" = 0,
   "LowRisk" = 1,
   "HighRisk" = 2,
@@ -17,21 +17,30 @@ interface sickLeaveInterface {
 export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
-  | HealthCheckEntry;
+  | HealthCheckEntry
+// | undefined;
+
 export interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare"
+  type: whatsEntryType.OCCUPATIONAL
   employerName?: string
   sickLeave?: sickLeaveInterface
   diagnosisCodes?: Array<string>
 }
 export interface HospitalEntry extends BaseEntry {
-  type: "Hospital"
+  type: whatsEntryType.HOSPITAL
   diagnosisCodes: Array<string>
   discharge?: dischargeInterface
 }
 export interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
-  healthCheckRating: HealthCheckRating;
+  type: whatsEntryType.HEALTHCHECK;
+  healthCheckRating: HealthCheckRatingScore;
+}
+// const ss = {type:"HealthCheck", id: "0", healthCheckRating: HealthCheckRating.CriticalRisk, specialist: "ramanujan"} as HealthCheckEntry //Testing whats good and what's not.
+
+export enum whatsEntryType {
+  OCCUPATIONAL = "OccupationalHealthcare",
+  HOSPITAL = "Hospital",
+  HEALTHCHECK = "HealthCheck"
 }
 interface BaseEntry {
   id: string;
@@ -40,7 +49,6 @@ interface BaseEntry {
   description?: string;
 }
 /* Entries related types above */
-
 export interface Patient {
   id: string;
   name: string;
@@ -50,15 +58,12 @@ export interface Patient {
   dateOfBirth: string;
   entries: Entry[]
 }
-
 export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
-
 export interface Diagnosis {
   code: string;
   name: string;
   latin?: string;
 }
-
 export enum Gender {
   Male = "male",
   Female = "female",
