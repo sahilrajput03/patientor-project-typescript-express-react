@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BrowserRouter as Router, Redirect, Route, useRouteMatch, useParams, Link, Switch, useHistory } from "react-router-dom";
 import React from "react";
@@ -59,29 +58,30 @@ const PatientListPage: React.FC = () => {
   // type EntryFormValues = Entry | undefined
 
   // const submitNewEntry = async (values: Entry) => {
-  const submitNewEntry = async (values: Entry) => {
-    console.log("All set of values passed to the submit function is ====> ", values)
-    try {
-      const { data: newEntry } = await axios.post<Entry>(
-        `${apiBaseUrl}/patients/${values.id}/entries`,
-        values
-      );
-      dispatch({ type: "ADD_ENTRY_OF_PATIENT", payload: { entry: newEntry, patientId: values.id } });
-      // For the above payload typing
-      closeModalEntry();
-    } catch (err) {
-      interface errtype {
-        response: {
-          data: {
-            error: string
-          }
-        }
-      }
-      const e = err as errtype;
-      console.error(e.response.data);
-      setError(e.response.data.error);
-    }
-  };
+  // const submitNewEntry = async (values: Entry) => {
+  // // const submitNewEntry = async (values: { [key: string]: string | number }) => {
+  //   console.log("All set of values passed to the submit function is ====> ", values)
+  //   try {
+  //     const { data: newEntry } = await axios.post<Entry>(
+  //       `${apiBaseUrl}/patients/${values.id}/entries`,
+  //       values
+  //     );
+  //     dispatch({ type: "ADD_ENTRY_OF_PATIENT", payload: { entry: newEntry, patientId: values.id } });
+  //     // For the above payload typing
+  //     closeModalEntry();
+  //   } catch (err) {
+  //     interface errtype {
+  //       response: {
+  //         data: {
+  //           error: string
+  //         }
+  //       }
+  //     }
+  //     const e = err as errtype;
+  //     console.error(e.response.data);
+  //     setError(e.response.data.error);
+  //   }
+  // };
 
   // const historyChanger = () => {
   //   useHistory().push("komalll");
@@ -200,8 +200,8 @@ const PatientListPage: React.FC = () => {
           <Button onClick={() => openModalEntry()}>Add New Entry</Button>
           <AddEntryModal
             modalOpen={modalOpenEntry}
-            onSubmit={submitNewEntry}
-            error={error}
+/*             onSubmit={submitNewEntry}
+ */            error={error}
             onClose={closeModalEntry}
             id={match.params.id}
           />

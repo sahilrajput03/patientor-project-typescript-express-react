@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 
-import { TextField, SelectField, GenderOption } from "./FormField";
+import { TextFieldComponent, SelectFieldComponent, GenderOption } from "./FormField";
 import { Gender, Patient } from "../types";
 
 /*  use type Patient, but omit id and entries, because those are irrelevant for new patient object we get from frontend. */
@@ -52,30 +52,30 @@ export const AddPatientForm: React.FC<PropsPatientForm> = ({ onSubmit, onCancel 
         return (
           <Form className="form ui"> {/* This is a FORMIK component. */}
             <Field /* This is a FORMIK component. */
-              label="Name"  /* This is passed as value of *label* key in props of TextField. */
-              placeholder="Name" /* This is passed as value of *placeholder* key in props of TextField. */
-              name="name" /* This is passed as value of *name* key inside *field* object in props of TextField. */
-              component={TextField} /* This IS THE REACT COMPONENT TO WHICH ALL PROPERTIES ARE GETTING PASSED. */
+              label="Name"  /* This is passed in props of TextFieldComponent. */
+              placeholder="Name" /* This is passed in props of TextFieldComponent. */
+              name="name" /* This is passed as value of *name* key inside ***field*** object in props of TextField. */
+              component={TextFieldComponent} /* This IS THE REACT COMPONENT TO WHICH ALL PROPERTIES ARE GETTING PASSED. */
             />
             <Field
               label="Social Security Number"
               placeholder="SSN"
               name="ssn"
-              component={TextField}
+              component={TextFieldComponent}
             />
             <Field
               label="Date Of Birth"
               placeholder="YYYY-MM-DD"
               name="dateOfBirth"
-              component={TextField}
+              component={TextFieldComponent}
             />
             <Field
               label="Occupation"
               placeholder="Occupation"
               name="occupation"
-              component={TextField}
+              component={TextFieldComponent}
             />
-            <SelectField /* This is a pure REACT component that renders SEMANTIC_UI_REACT which inturn renders FORMIK component */
+            <SelectFieldComponent /* This is a pure REACT component that renders SEMANTIC_UI_REACT which inturn renders FORMIK component */
               label="Gender" /* This property is directly passed as value of **label** key in the SelectField react component */
               name="gender" /* This property is directly passed as value of **name** key in the SelectField react component */
               options={genderOptions} /* This property is directly passed as value of **options** key in the SelectField react component */

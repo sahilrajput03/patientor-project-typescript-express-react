@@ -19,7 +19,7 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry
 // | undefined;
-
+// export type Diagnosis = 
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: whatsEntryType.OCCUPATIONAL
   employerName?: string
@@ -35,8 +35,7 @@ export interface HealthCheckEntry extends BaseEntry {
   type: whatsEntryType.HEALTHCHECK;
   healthCheckRating: HealthCheckRatingScore;
 }
-// const ss = {type:"HealthCheck", id: "0", healthCheckRating: HealthCheckRating.CriticalRisk, specialist: "ramanujan"} as HealthCheckEntry //Testing whats good and what's not.
-
+// const ssTestVariable = {type:"HealthCheck", id: "0", healthCheckRating: HealthCheckRating.CriticalRisk, specialist: "ramanujan"} as HealthCheckEntry //Testing whats good and what's not.
 export enum whatsEntryType {
   OCCUPATIONAL = "OccupationalHealthcare",
   HOSPITAL = "Hospital",
@@ -59,6 +58,7 @@ export interface Patient {
   entries: Entry[]
 }
 export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
+
 export interface Diagnosis {
   code: string;
   name: string;

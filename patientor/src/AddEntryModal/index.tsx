@@ -7,12 +7,13 @@ import { Entry } from "../types";
 interface Props {
   modalOpen: boolean;
   onClose: () => void;
-  onSubmit: (values: Entry) => void;
+  // onSubmit: (values: Entry) => void;
+  /* onSubmit: (values: { [key: string]: string | number }) => void; */
   error?: string;
   id: string;
 }
 
-const AddEntryModal: React.FC<Props> = ({ modalOpen, onClose, onSubmit, error, id }: Props) => (
+const AddEntryModal: React.FC<Props> = ({ modalOpen, onClose, /* onSubmit, */ error, id }: Props) => (
   // const AddPatientModal = ({ modalOpen, onClose, onSubmit, error }: Props) => ( // THis was the actual line, but throwin error return type isn't defined.
   <Modal open={modalOpen} onClose={onClose} centered={false} closeIcon> {/* This is a SEMANTIC_UI_REACT component. */}
     <Modal.Header>Add new entry</Modal.Header>
@@ -21,7 +22,7 @@ const AddEntryModal: React.FC<Props> = ({ modalOpen, onClose, onSubmit, error, i
       {/* This ^^ Modal.Content just sets the class name as "content" in the HTML5 div tag simply.  */}
       {error && <Segment inverted color="red">{`Error: ${error}`}</Segment> /* This is a SEMANTIC_UI_REACT component. */}
       {/* ABOVE Segment tag OF SEMANTIC_UI_REACT COMPONENT transpiler to this=>  <div style="color: red;">Field is required</div> */}
-      <AddEntryForm id={id} onSubmit={onSubmit} onCancel={onClose} /> {/* This is a pure REACT component. */}
+      <AddEntryForm id={id} /* onSubmit={onSubmit} */ onCancel={onClose} /> {/* This is a pure REACT component. */}
     </Modal.Content>
   </Modal>
 );
