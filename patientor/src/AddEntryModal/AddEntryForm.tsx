@@ -3,7 +3,7 @@ import { diagnoseEntries, DiagnoseEntry } from './data/diagnoses-ts'
 // import { HealthCheckEntry, HospitalEntry, OccupationalHealthcareEntry } from "../types";
 import { Entry, whatsEntryType } from "../types"
 import { Grid, Button } from "semantic-ui-react";
-import { Field, Formik, Form } from "formik";
+import { Field, Formik, Form, isString } from "formik";
 import { TextFieldComponent, SelectFieldComponent, NumberFieldComponent, DiagnosisSelectionComponent } from './FormField';
 import { stringify } from 'querystring';
 
@@ -32,11 +32,12 @@ const diagnosisListLocal/* MAIN */: DiagnoseEntry[] = diagnoseEntries
 // ***************************************************** AddEntryForm Component BELOW.
 interface AddEntryFormProps {
   // onSubmit: (values: Entry) => void
-  /*   onSubmit: (values: { [key: string]: string | number }) => void */
+  // onSubmit: (values: { [key: string]: string | number }) => void
+  onSubmit: (values: { [key: string]: string | number | object }) => void
   onCancel: () => void
   id: string
 }
-const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, id }) => {
+const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) => {
   return (
     <Formik
       initialValues={{
@@ -47,46 +48,68 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
           startDate: "",
           endDate: ""
         },//For Occupational Entry only
-        discharge: {
-          data: "",
-          criteria: ""
-        },
+        "discharge.data": "",
+        "discharge.criteria": "",
+        // Below methodology works too.
+        // discharge: {
+        //   data: "",
+        //   criteria: ""
+        // },
         id: id, //Base entry field.
         date: "", // Base entry field.
         specialist: "", //Base entry field.
         description: "", //Base entry field.
       }}
-      // onSubmit={onSubmit}/* The onSubmit callback has been passed down all the way from our patient list page. Basically it sends a HTTP POST request to our backend, adds the patient returned from the backend to our app's state and closes the modal. If the backend returns an error, the error is displayed on the form. */
-      onSubmit={(values) => {
-        alert(`values ${JSON.stringify(values, null, 2)}`)
-      }}
+      onSubmit={onSubmit}/* The onSubmit callback has been passed down all the way from our patient list page. Basically it sends a HTTP POST request to our backend, adds the patient returned from the backend to our app's state and closes the modal. If the backend returns an error, the error is displayed on the form. */
+      // onSubmit={(values) => { // This is for testing submit data for debugging.
+      //   alert(`values ${JSON.stringify(values, null, 2)}`)
+      // }}
       validate={values => {
         const requiredError = "Field is required";
-        const errors: { [field: string]: string } = {};
+        // const errors: { [field: string]: string } = {}; // This doesn't work for nested object
+        const errors: {
+          date?: string, specialist?: string, healthScore?: string, employerName?: string, sickLeave?: {
+            startDate?: string, endDate?: string
+          }
+        } = {};
+        // errors.sickLeave = { startDate: "", endDate: "" }
+
         if (!values.date) {
           errors.date = requiredError;
         }
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (!values.sickLeave.startDate) {
-          errors.employerName = requiredError;
-        }
         if (!values.employerName) {
           errors.employerName = requiredError;
+        }
+        if (!values.sickLeave.startDate) {
+          if (!errors.sickLeave) //Tip: Boolean({}) =>true
+            errors.sickLeave = {} // We did this for typescript.
+          errors.sickLeave.startDate = requiredError;
+        }
+        if (!values.sickLeave.endDate) {
+          if (!errors.sickLeave) //Tip: Boolean({}) =>true
+            errors.sickLeave = {} // We did this for typescript.
+          errors.sickLeave.endDate = requiredError;
         }
         if (values.healthScore > 2 || values.healthScore < 0) {
           errors.healthScore = `Score can't be ${values.healthScore}, you must set value as 0, 1 or 2.`;
         }
-        // if (!values.description) {
+        if (isString(values.healthScore))
+          errors.healthScore = `Health score can't be empty.`
+
+        // if (!values.description) {// Description is a optional field.
         //   errors.description = requiredError;
         // }
         // console.log('validation executed..')
+        console.log('errors (noww) ==>', errors);
+
         return errors;
       }}
     >
       {({ isValid, dirty, values, setFieldValue, setFieldTouched }) => {
-        console.log('values inside function==>', values)
+        // console.log('values inside function==>', values)
         return (
           <Form className="form ui"> {/* This is a FORMIK component. */}
             <SelectFieldComponent /* This is a pure REACT component that renders SEMANTIC_UI_REACT which inturn renders FORMIK component */
@@ -124,13 +147,13 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
             {values.type == whatsEntryType.HOSPITAL ? <div>
               <Field
                 label="Discharge(Date)"
-                placeholder="Specify date of dicharge"
+                placeholder="Specify date of dicharge(Optional)"
                 name="discharge.date"
                 component={TextFieldComponent}
               />
               <Field
                 label="Discharge(Criteria)"
-                placeholder="Specify criteria for discharging."
+                placeholder="Specify criteria for discharging(Optional)"
                 name="discharge.criteria"
                 component={TextFieldComponent}
               /></div> : null}
@@ -140,7 +163,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
                 diagnoses={diagnosisListLocal}
-                placeholder="Select one from dropdown"
+                placeholder="Select from dropdown(Optional)"
               /> : null}
             <Field
               label="Specialist"
@@ -178,15 +201,11 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
                 </Button>
               </Grid.Column>
             </Grid>
-            {/* <pre>
-              <b>--Debug--</b>
-              {JSON.stringify(values, null, 2)}
-            </pre> */}
             <div><pre><b>|--Live-Debug--|</b>{JSON.stringify(values, null, 2)}</pre></div>
           </Form>
         );
       }}
-    </Formik>
+    </Formik >
   );
 }
 export default AddEntryForm;

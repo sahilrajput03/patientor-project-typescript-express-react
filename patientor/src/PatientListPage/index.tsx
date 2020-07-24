@@ -58,30 +58,31 @@ const PatientListPage: React.FC = () => {
   // type EntryFormValues = Entry | undefined
 
   // const submitNewEntry = async (values: Entry) => {
-  // const submitNewEntry = async (values: Entry) => {
-  // // const submitNewEntry = async (values: { [key: string]: string | number }) => {
-  //   console.log("All set of values passed to the submit function is ====> ", values)
-  //   try {
-  //     const { data: newEntry } = await axios.post<Entry>(
-  //       `${apiBaseUrl}/patients/${values.id}/entries`,
-  //       values
-  //     );
-  //     dispatch({ type: "ADD_ENTRY_OF_PATIENT", payload: { entry: newEntry, patientId: values.id } });
-  //     // For the above payload typing
-  //     closeModalEntry();
-  //   } catch (err) {
-  //     interface errtype {
-  //       response: {
-  //         data: {
-  //           error: string
-  //         }
-  //       }
-  //     }
-  //     const e = err as errtype;
-  //     console.error(e.response.data);
-  //     setError(e.response.data.error);
-  //   }
-  // };
+  const submitNewEntry = async (values: { [key: string]: string | number | object }) => {
+    console.log("All set of values passed to the submit function is ====> ", values)
+    alert(`So we got=> ${JSON.stringify(values)}`)
+    try {
+      const { data: newEntry } = await axios.post<Entry>(
+        // The Entry type in the axios.post<Entry> tells that its returning type is Entry for the request, and is destructured to `data`, and then renamed to newEntry variable.
+        `${apiBaseUrl}/patients/${values.id}/entries`,
+        values
+      );
+      // dispatch({ type: "ADD_ENTRY_OF_PATIENT", payload: { entry: newEntry, patientId: values.id } });
+      // For the above payload typing
+      closeModalEntry();
+    } catch (err) {
+      interface errtype {
+        response: {
+          data: {
+            error: string
+          }
+        }
+      }
+      const e = err as errtype;
+      console.error(e.response.data);
+      setError(e.response.data.error);
+    }
+  };
 
   // const historyChanger = () => {
   //   useHistory().push("komalll");
@@ -200,8 +201,8 @@ const PatientListPage: React.FC = () => {
           <Button onClick={() => openModalEntry()}>Add New Entry</Button>
           <AddEntryModal
             modalOpen={modalOpenEntry}
-/*             onSubmit={submitNewEntry}
- */            error={error}
+            onSubmit={submitNewEntry}
+            error={error}
             onClose={closeModalEntry}
             id={match.params.id}
           />
