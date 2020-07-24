@@ -9,6 +9,7 @@ interface Props {
   onClose: () => void;
   // onSubmit: (values: Entry) => void;
   onSubmit: (values: { [key: string]: string | number | object }) => void;
+  // Above type annotation is just phenomenol, say we are defining that object's keys can have objects as their values too.
   error?: string;
   id: string;
 }
