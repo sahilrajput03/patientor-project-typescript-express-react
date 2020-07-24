@@ -89,16 +89,16 @@ const PatientListPage: React.FC = () => {
   // };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const personNameClickHandler = async (patient: Patient) => {
-    try {
-      const { data } = await axios.get<Patient>(
-        `${apiBaseUrl}/patients/${patient.id}`);
-      // alert(JSON.stringify(data));
-      dispatch({ type: "UPDATE_FULLDETAILS_PATIENT", payload: data });
-    } catch (error) {
-      console.log(`error=> ${error.message} from ${error.name}. Thanks.`);
-    }
-  };
+  // const personNameClickHandler = async (patient: Patient) => {
+  //   try {
+  //     const { data } = await axios.get<Patient>(
+  //       `${apiBaseUrl}/patients/${patient.id}`);
+  //     // alert(JSON.stringify(data));
+  //     dispatch({ type: "UPDATE_FULLDETAILS_PATIENT", payload: data });
+  //   } catch (error) {
+  //     console.log(`error=> ${error.message} from ${error.name}. Thanks.`);
+  //   }
+  // };
 
   const match = useRouteMatch('/:id') as RoutesInterface;
   // const { id } = useParams<{ id: string }>(); // suggested by the course.

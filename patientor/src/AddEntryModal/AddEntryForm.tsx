@@ -42,19 +42,19 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
     <Formik
       initialValues={{
         type: whatsEntryType.HEALTHCHECK,
-        healthScore: 1, //For Health Check Entry only.
+        healthCheckRating: 0, //For Health Check Entry only.
         employerName: "", //For Occupational Entry only.
         sickLeave: {
           startDate: "",
           endDate: ""
         },//For Occupational Entry only
-        "discharge.data": "",
-        "discharge.criteria": "",
-        // Below methodology works too.
-        // discharge: {
-        //   data: "",
-        //   criteria: ""
-        // },
+        // "discharge.data": "", // Don't do this, this type of property isn't the shape we need to submit :(
+        // "discharge.criteria": "", // Don't do this, this type of property isn't the shape we need to submit :(
+        // Below methodology is required.
+        discharge: {
+          data: "",
+          criteria: ""
+        },
         id: id, //Base entry field.
         date: "", // Base entry field.
         specialist: "", //Base entry field.
@@ -68,7 +68,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
         const requiredError = "Field is required";
         // const errors: { [field: string]: string } = {}; // This doesn't work for nested object
         const errors: {
-          date?: string, specialist?: string, healthScore?: string, employerName?: string, sickLeave?: {
+          date?: string, specialist?: string, healthCheckRating?: string, employerName?: string, sickLeave?: {
             startDate?: string, endDate?: string
           }
         } = {};
@@ -80,24 +80,24 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (!values.employerName) {
+        if (!values.employerName && values.type == whatsEntryType.OCCUPATIONAL) {
           errors.employerName = requiredError;
         }
-        if (!values.sickLeave.startDate) {
+        if (!values.sickLeave.startDate && values.type == whatsEntryType.OCCUPATIONAL) {
           if (!errors.sickLeave) //Tip: Boolean({}) =>true
             errors.sickLeave = {} // We did this for typescript.
           errors.sickLeave.startDate = requiredError;
         }
-        if (!values.sickLeave.endDate) {
+        if (!values.sickLeave.endDate && values.type == whatsEntryType.OCCUPATIONAL) {
           if (!errors.sickLeave) //Tip: Boolean({}) =>true
             errors.sickLeave = {} // We did this for typescript.
           errors.sickLeave.endDate = requiredError;
         }
-        if (values.healthScore > 2 || values.healthScore < 0) {
-          errors.healthScore = `Score can't be ${values.healthScore}, you must set value as 0, 1 or 2.`;
+        if (values.healthCheckRating > 2 || values.healthCheckRating < 0) {
+          errors.healthCheckRating = `Score can't be ${values.healthCheckRating}, you must set value as 0, 1 or 2.`;
         }
-        if (isString(values.healthScore))
-          errors.healthScore = `Health score can't be empty.`
+        if (isString(values.healthCheckRating))
+          errors.healthCheckRating = `Health score can't be empty.`
 
         // if (!values.description) {// Description is a optional field.
         //   errors.description = requiredError;
@@ -180,7 +180,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
             {values.type == whatsEntryType.HEALTHCHECK ? <Field
               label="Health Score(or HealthCheckRatingScore)"
               placeholder="Enter from 0, 1 or 2."
-              name="healthScore"
+              name="healthCheckRating"
               min={0}
               max={3}
               component={NumberFieldComponent}
