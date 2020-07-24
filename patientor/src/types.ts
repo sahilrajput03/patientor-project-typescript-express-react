@@ -20,16 +20,16 @@ export type Entry =
   | HealthCheckEntry
 // | undefined;
 // export type Diagnosis = 
+export interface HospitalEntry extends BaseEntry {
+  type: whatsEntryType.HOSPITAL
+  diagnosisCodes: Array<string>
+  discharge?: dischargeInterface
+}
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: whatsEntryType.OCCUPATIONAL
   employerName?: string
   sickLeave?: sickLeaveInterface
   diagnosisCodes?: Array<string>
-}
-export interface HospitalEntry extends BaseEntry {
-  type: whatsEntryType.HOSPITAL
-  diagnosisCodes: Array<string>
-  discharge?: dischargeInterface
 }
 export interface HealthCheckEntry extends BaseEntry {
   type: whatsEntryType.HEALTHCHECK;

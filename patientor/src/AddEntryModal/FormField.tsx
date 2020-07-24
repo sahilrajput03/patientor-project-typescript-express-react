@@ -1,56 +1,51 @@
 import React from "react";
 import { ErrorMessage, Field, FieldProps, FormikProps } from "formik";
 import { Form, Dropdown, DropdownProps } from "semantic-ui-react";
-import { Diagnosis } from "../types"; // importantly...
+import { Diagnosis, whatsEntryType } from "../types"; // importantly...
 import { EntryOptionPrototype } from './AddEntryForm'
 
-type fieldTypeIdentifierType = "entryoptions" | "hide"
+type fieldTypeIdentifierType = "entryoptions"
 
-type SelectFieldProps = {
-  name: string;
-  label: string;
-  options: EntryOptionPrototype[];
-  showHideFlag: fieldTypeIdentifierType;
-  // show: boolean;
-  // options: EntryOptionPrototype[];
-};
 
 const assertNever = (value: never): never => {
   throw new Error(
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
   );
 };
-
+type SelectFieldProps = {
+  name: string;
+  label: string;
+  options: EntryOptionPrototype[];
+  // showHideFlag: fieldTypeIdentifierType;
+  // show: boolean;
+  // options: EntryOptionPrototype[];
+};
 export const SelectFieldComponent: React.FC<SelectFieldProps> = ({
   name,
   label,
   options,
-  showHideFlag,
+  // showHideFlag,
 }: SelectFieldProps) => {
   // alert(JSON.stringify({ options, fieldTypeIdentifier }, null, 2))
-  switch (showHideFlag) {
-    case "entryoptions":
-      const entryOptions = options as EntryOptionPrototype[];
-      return (
-        <Form.Field>
-          <label>{label}</label>
-          <Field as="select" name={name} className="ui dropdown">
-            {entryOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label || option.value}
-              </option>
-            ))}
-          </Field>
-        </Form.Field>
-      );
+  // switch (options[0].value) {
+  //   case whatsEntryType.OCCUPATIONAL:
+  return (
+    <Form.Field>
+      <label>{label}</label>
+      <Field as="select" name={name} className="ui dropdown">
+        {options.map(o => (
+          <option key={o.value} value={o.value}>
+            {o.label || o.value}
+          </option>
+        ))}
+      </Field>
+    </Form.Field>
+  );
 
-    case "hide":
-      return (<></>)
-
-    default:
-      assertNever(showHideFlag);
-      return (<></>)
-  }
+  //   default:
+  //     assertNever(options.values);
+  //     return (<></>)
+  // }
 };
 /**
  ** 1. TextFieldProps
@@ -107,11 +102,13 @@ interface DiagnosisSelectionPropsInterface {
   diagnoses: Diagnosis[];
   setFieldValue: FormikProps<{ diagnosisCodes: string[] }>["setFieldValue"];
   setFieldTouched: FormikProps<{ diagnosisCodes: string[] }>["setFieldTouched"];
+  placeholder: string;
 }
 export const DiagnosisSelectionComponent = ({
   diagnoses,
   setFieldValue,
-  setFieldTouched
+  setFieldTouched,
+  placeholder
 }: DiagnosisSelectionPropsInterface) => {
   const field = "diagnosisCodes";
   const onChange = (
@@ -135,6 +132,7 @@ export const DiagnosisSelectionComponent = ({
         multiple
         search
         selection
+        placeholder={placeholder}
         options={stateOptions}
         onChange={onChange}
       />

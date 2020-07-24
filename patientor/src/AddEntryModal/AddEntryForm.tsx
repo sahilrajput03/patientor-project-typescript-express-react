@@ -5,6 +5,7 @@ import { Entry, whatsEntryType } from "../types"
 import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form } from "formik";
 import { TextFieldComponent, SelectFieldComponent, NumberFieldComponent, DiagnosisSelectionComponent } from './FormField';
+import { stringify } from 'querystring';
 
 // ************************************** options type1 for select field component BELOW.
 export type EntryOptionPrototype = {
@@ -41,11 +42,19 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
       initialValues={{
         type: whatsEntryType.HEALTHCHECK,
         healthScore: 1, //For Health Check Entry only.
-        id: id, // This is for everycase.
-        date: "", // This is for everycase.
-        specialist: "", // This is for everycase.
-        description: "", //Thi is for everycase.
-        diagnosis: []
+        employerName: "", //For Occupational Entry only.
+        sickLeave: {
+          startDate: "",
+          endDate: ""
+        },//For Occupational Entry only
+        discharge: {
+          data: "",
+          criteria: ""
+        },
+        id: id, //Base entry field.
+        date: "", // Base entry field.
+        specialist: "", //Base entry field.
+        description: "", //Base entry field.
       }}
       // onSubmit={onSubmit}/* The onSubmit callback has been passed down all the way from our patient list page. Basically it sends a HTTP POST request to our backend, adds the patient returned from the backend to our app's state and closes the modal. If the backend returns an error, the error is displayed on the form. */
       onSubmit={(values) => {
@@ -60,46 +69,79 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
+        if (!values.sickLeave.startDate) {
+          errors.employerName = requiredError;
+        }
+        if (!values.employerName) {
+          errors.employerName = requiredError;
+        }
         if (values.healthScore > 2 || values.healthScore < 0) {
           errors.healthScore = `Score can't be ${values.healthScore}, you must set value as 0, 1 or 2.`;
         }
         // if (!values.description) {
         //   errors.description = requiredError;
         // }
-        console.log('validation executed..')
+        // console.log('validation executed..')
         return errors;
       }}
     >
-      {({ isValid, dirty, values }) => {
+      {({ isValid, dirty, values, setFieldValue, setFieldTouched }) => {
         console.log('values inside function==>', values)
         return (
           <Form className="form ui"> {/* This is a FORMIK component. */}
             <SelectFieldComponent /* This is a pure REACT component that renders SEMANTIC_UI_REACT which inturn renders FORMIK component */
               label="Entry Type" /* This property is directly passed as value of **label** key in the SelectField react component */
               name="type" /* This property is directly passed as value of **name** key in the SelectField react component */
-              showHideFlag="entryoptions"
               options={entryOptions} /* This property is directly passed as value of **options** key in the SelectField react component */
             />
-
-            {/*             <SelectFieldComponent
-              label="Hospital Diagnosis Code"
-              name="healthCheckRating"
-              showHideFlag={values.type === whatsEntryType.HOSPITAL ? "hospital_diagnosis" : "hide"}
-              options={healthCheckOptions}
-            />
- */}            <Field
+            <Field
               label="Date"
               placeholder="YYYY-MM-DD"
               name="date"
               component={TextFieldComponent}
             />
-            <Field
-              label="Diagnosis component"
-              placeholder="Type diagnosis codes here."
-              name="diagnosis"
-              diagnoses={diagnosisListLocal}
-              component={DiagnosisSelectionComponent}
-            />
+
+            {values.type == whatsEntryType.OCCUPATIONAL ? <div>
+              <Field
+                label="Employer Name"
+                placeholder="Dan Abramov"
+                name="employerName"
+                component={TextFieldComponent}
+              />
+              <Field
+                label="Sick Leave(Start Date, End Date)"
+                placeholder="YYYY-MM-DD"
+                name="sickLeave.startDate"
+                component={TextFieldComponent}
+              />
+              <Field
+                label=""
+                placeholder="YYYY-MM-DD"
+                name="sickLeave.endDate"
+                component={TextFieldComponent}
+              />
+            </div> : null}
+            {values.type == whatsEntryType.HOSPITAL ? <div>
+              <Field
+                label="Discharge(Date)"
+                placeholder="Specify date of dicharge"
+                name="discharge.date"
+                component={TextFieldComponent}
+              />
+              <Field
+                label="Discharge(Criteria)"
+                placeholder="Specify criteria for discharging."
+                name="discharge.criteria"
+                component={TextFieldComponent}
+              /></div> : null}
+            <br></br>
+            {values.type == whatsEntryType.OCCUPATIONAL || values.type == whatsEntryType.HOSPITAL ?
+              <DiagnosisSelectionComponent
+                setFieldValue={setFieldValue}
+                setFieldTouched={setFieldTouched}
+                diagnoses={diagnosisListLocal}
+                placeholder="Select one from dropdown"
+              /> : null}
             <Field
               label="Specialist"
               placeholder="Doctor's Name"
@@ -112,19 +154,14 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
               name="description"
               component={TextFieldComponent}
             />
-            <Field
+            {values.type == whatsEntryType.HEALTHCHECK ? <Field
               label="Health Score(or HealthCheckRatingScore)"
               placeholder="Enter from 0, 1 or 2."
               name="healthScore"
               min={0}
               max={3}
               component={NumberFieldComponent}
-            />
-
-
-
-
-
+            /> : null}
             <Grid>{/* This is a SEMANTIC_UI_REACT component. */}
               <Grid.Column floated="left" width={5}> {/* This is a SEMANTIC_UI_REACT component. */}
                 <Button type="button" onClick={onCancel}/* This is where we call the onCancel method we pass to this formik form initially. */ color="red"> {/* This is a SEMANTIC_UI_REACT component. */}
@@ -136,17 +173,16 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ /* onSubmit, */ onCancel, i
                   type="submit"
                   floated="right"
                   color="green"
-                  disabled={!dirty || !isValid}
-                >
+                  disabled={!dirty || !isValid}>
                   Add
                 </Button>
-
               </Grid.Column>
             </Grid>
-            <pre>
+            {/* <pre>
               <b>--Debug--</b>
               {JSON.stringify(values, null, 2)}
-            </pre>
+            </pre> */}
+            <div><pre><b>|--Live-Debug--|</b>{JSON.stringify(values, null, 2)}</pre></div>
           </Form>
         );
       }}
