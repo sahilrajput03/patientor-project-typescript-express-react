@@ -1,4 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
+// Above rule is no more needed.
+export type allEntriesUnionForSubmit = (HospitalEntry & OccupationalHealthcareEntry & HealthCheckEntry) | BaseEntry
+// export interface allEntriesUnionForSubmit {
+//   [key: string]: string | number | dischargeInterface | sickLeaveInterface
+// }
+interface dischargeInterface {
+  date: string;
+  criteria: string;
+}
+interface sickLeaveInterface {
+  startDate: string;
+  endDate: string;
+}
 /* Entries related types below */
 export enum HealthCheckRatingScore {
   "Healthy" = 0,

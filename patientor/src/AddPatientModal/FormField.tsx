@@ -8,19 +8,19 @@ export type GenderOption = {
   value: Gender;
   label: string;
 };
-
-// TYPESCRIPT: type for select field component
-type SelectFieldProps = {
+/**
+ * Select Field Props Interface and Component.
+ */
+type SelectFieldComponentPropsInterface = {
   name: string;
   label: string;
   options: GenderOption[];
 };
-
-export const SelectFieldComponent: React.FC<SelectFieldProps> = ({
+export const SelectFieldComponent: React.FC<SelectFieldComponentPropsInterface> = ({
   name,
   label,
   options
-}: SelectFieldProps) => (
+}: SelectFieldComponentPropsInterface) => (
     <Form.Field>{/* This is a SEMANTIC_UI_REACT component. */}
       <label>{label}</label>{/* <label> is a HTML5 tag. */}
       <Field as="select" name={name} className="ui dropdown">{/* This is a FORMIK component. */}
@@ -32,21 +32,24 @@ export const SelectFieldComponent: React.FC<SelectFieldProps> = ({
       </Field>
     </Form.Field>
   );
-
+/**
+ * Text Field Component Props Interface and Component.
+ */
 interface TextProps extends FieldProps {
   label: string;
   placeholder: string;
 }
-
 export const TextFieldComponent: React.FC<TextProps> = ({
   field,
   label,
   placeholder,
-  form
+  /* form */ // This is to log errors.
 }) => {
-  // console.log('form.errors (checking)=>', form.errors)  // This just fulls the console with logs..YUCKKKKK!!
+  // console.log('form.errors (checking)=>', form.errors) 
+  // Above log just fulls the console with logs..YUCKKKKK!!
   // console.log("field:-", field)
-  /* So, field ^^^^, this basically includes *name* key and *value* key of individual properties we pass to Field (FORMIK component).*/
+  // So, above field ^^^^, this basically includes *name* key and
+  // *value* key of individual properties we pass to Field (FORMIK component).
   return (
     <Form.Field>{/* This is a SEMANTIC_UI_REACT component. */}
       <label>{label}</label>{/* <label> is a HTML5 tag. */}
@@ -58,17 +61,16 @@ export const TextFieldComponent: React.FC<TextProps> = ({
   );
 };
 
-/*
-  for exercises 9.24 and later :-
-*/
-interface NumberProps extends FieldProps {
+/**
+ * Number Field Props Interface and Component.
+ */
+interface NumberFieldPropsInterface extends FieldProps {
   label: string;
   errorMessage?: string;
   min: number;
   max: number;
 }
-
-export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) => (
+export const NumberField: React.FC<NumberFieldPropsInterface> = ({ field, label, min, max }) => (
   <Form.Field>
     <label>{label}</label>
     <Field {...field} type='number' min={min} max={max} />
@@ -77,16 +79,19 @@ export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) =
     </div>
   </Form.Field>
 );
-
-export const DiagnosisSelection = ({
-  diagnoses,
-  setFieldValue,
-  setFieldTouched
-}: {
+/**
+ * Diagnosis Selection Props Interface and Component.
+ */
+interface DiagnosisSelectionPropsInterface {
   diagnoses: Diagnosis[];
   setFieldValue: FormikProps<{ diagnosisCodes: string[] }>["setFieldValue"];
   setFieldTouched: FormikProps<{ diagnosisCodes: string[] }>["setFieldTouched"];
-}) => {
+}
+export const DiagnosisSelection: React.FC<DiagnosisSelectionPropsInterface> = ({
+  diagnoses,
+  setFieldValue,
+  setFieldTouched
+}: DiagnosisSelectionPropsInterface) => {
   const field = "diagnosisCodes";
   const onChange = (
     _event: React.SyntheticEvent<HTMLElement, Event>,

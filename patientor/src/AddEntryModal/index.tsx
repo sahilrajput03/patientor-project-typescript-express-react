@@ -1,14 +1,15 @@
-// AddEntryModal
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { Modal, Segment } from 'semantic-ui-react';
 import AddEntryForm from './AddEntryForm';
-import { Entry } from "../types";
+import { allEntriesUnionForSubmit, Entry } from "../types";
 
 interface Props {
   modalOpen: boolean;
   onClose: () => void;
   // onSubmit: (values: Entry) => void;
-  onSubmit: (values: { [key: string]: string | number | object }) => void;
+  // onSubmit: (values: { [key: string]: string | number | object }) => void;
+  onSubmit: (values: allEntriesUnionForSubmit) => void;
   // Above type annotation is just phenomenol, say we are defining that object's keys can have objects as their values too.
   error?: string;
   id: string;

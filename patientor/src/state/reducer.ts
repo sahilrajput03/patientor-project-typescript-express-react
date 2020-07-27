@@ -69,32 +69,18 @@ export const reducer = (state: State, action: Action): State => {
     case "SET_DIAGNOSIS_CODES_LIST":
       return { ...state, diagnosisCodes: [...action.payload] }
     case "ADD_ENTRY_OF_PATIENT":
-      // console.log('state=>', state)
-      // console.log('action.payload.id=>', action.payload)
-      // console.log('state.patients[action.payload.id].entries=>', state.patients[action.payload.patientID])
-      switch (action.payload.entry.type) {
-        case "HealthCheck":
-          return {
-            ...state,
-            patients: {
-              ...state.patients,
-              [action.payload.patientId]: {
-                ...state.patients[action.payload.patientId],
-                entries: [
-                  ...state.patients[action.payload.patientId].entries,
-                  action.payload.entry
-                ]
-              }
-            }
+      return {
+        ...state,
+        patients: {
+          ...state.patients,
+          [action.payload.patientId]: {
+            ...state.patients[action.payload.patientId],
+            entries: [
+              ...state.patients[action.payload.patientId].entries,
+              action.payload.entry
+            ]
           }
-        case "Hospital":
-          return state
-
-        case "OccupationalHealthcare":
-          return state
-
-        default:
-          return state
+        }
       }
     default:
       return state;

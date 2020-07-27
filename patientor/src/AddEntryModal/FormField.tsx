@@ -1,17 +1,17 @@
 import React from "react";
 import { ErrorMessage, Field, FieldProps, FormikProps } from "formik";
 import { Form, Dropdown, DropdownProps } from "semantic-ui-react";
-import { Diagnosis, whatsEntryType } from "../types"; // importantly...
+import { Diagnosis } from "../types"; // importantly...
 import { EntryOptionPrototype } from './AddEntryForm'
 
 type fieldTypeIdentifierType = "entryoptions"
 
 
-const assertNever = (value: never): never => {
-  throw new Error(
-    `Unhandled discriminated union member: ${JSON.stringify(value)}`
-  );
-};
+// const assertNever = (value: never): never => {
+//   throw new Error(
+//     `Unhandled discriminated union member: ${JSON.stringify(value)}`
+//   );
+// };
 type SelectFieldProps = {
   name: string;
   label: string;
@@ -59,7 +59,7 @@ export const TextFieldComponent: React.FC<TextProps> = ({
   field,
   label,
   placeholder,
-  form
+  /* form */ // This is to log errors.
 }: TextProps) => {
   // console.log('form.errors (checking)=>', form.errors)  // This just fulls the console with logs..YUCKKKKK!!
   // console.log("field:-", field)
@@ -104,7 +104,7 @@ interface DiagnosisSelectionPropsInterface {
   setFieldTouched: FormikProps<{ diagnosisCodes: string[] }>["setFieldTouched"];
   placeholder: string;
 }
-export const DiagnosisSelectionComponent = ({
+export const DiagnosisSelectionComponent: React.FC<DiagnosisSelectionPropsInterface> = ({
   diagnoses,
   setFieldValue,
   setFieldTouched,

@@ -9,7 +9,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
+// const ss = "unusedd";
+// Whenever you see editor's eslint not working or detecting issues/errors,
+//  it'll be fixed when you run `npm run lintWindows` script from command line.
 const PORT = 3001;
 // console.log('sahil');
 

@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
 import { diagnoseEntries, DiagnoseEntry } from './data/diagnoses-ts'
 // import { HealthCheckEntry, HospitalEntry, OccupationalHealthcareEntry } from "../types";
-import { Entry, whatsEntryType } from "../types"
+import { whatsEntryType, allEntriesUnionForSubmit } from "../types"
 import { Grid, Button } from "semantic-ui-react";
 import { Field, Formik, Form, isString } from "formik";
 import { TextFieldComponent, SelectFieldComponent, NumberFieldComponent, DiagnosisSelectionComponent } from './FormField';
-import { stringify } from 'querystring';
 
 // ************************************** options type1 for select field component BELOW.
 export type EntryOptionPrototype = {
   value: whatsEntryType;
   label: string;
 };
+const someunsed = 234
 const entryOptions/* MAIN */: EntryOptionPrototype[] = [
   // ** First will be default one in select filed coponent, .
   { value: whatsEntryType.OCCUPATIONAL, label: "Occupational Healthcare Entry" },
@@ -33,7 +34,8 @@ const diagnosisListLocal/* MAIN */: DiagnoseEntry[] = diagnoseEntries
 interface AddEntryFormProps {
   // onSubmit: (values: Entry) => void
   // onSubmit: (values: { [key: string]: string | number }) => void
-  onSubmit: (values: { [key: string]: string | number | object }) => void
+  // onSubmit: (values: { [key: string]: string | number | object }) => void // This shows error form eslint, say you must not use object directly, coz its behaviour isn't good overall.
+  onSubmit: (values: allEntriesUnionForSubmit) => void
   onCancel: () => void
   id: string
 }
@@ -52,7 +54,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
         // "discharge.criteria": "", // Don't do this, this type of property isn't the shape we need to submit :(
         // Below methodology is required.
         discharge: {
-          data: "",
+          date: "",
           criteria: ""
         },
         id: id, //Base entry field.
@@ -80,21 +82,21 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (!values.employerName && values.type == whatsEntryType.OCCUPATIONAL) {
+        if (!values.employerName && values.type === whatsEntryType.OCCUPATIONAL) {
           errors.employerName = requiredError;
         }
-        if (!values.sickLeave.startDate && values.type == whatsEntryType.OCCUPATIONAL) {
+        if (!values.sickLeave.startDate && values.type === whatsEntryType.OCCUPATIONAL) {
           if (!errors.sickLeave) //Tip: Boolean({}) =>true
             errors.sickLeave = {} // We did this for typescript.
           errors.sickLeave.startDate = requiredError;
         }
-        if (!values.sickLeave.endDate && values.type == whatsEntryType.OCCUPATIONAL) {
+        if (!values.sickLeave.endDate && values.type === whatsEntryType.OCCUPATIONAL) {
           if (!errors.sickLeave) //Tip: Boolean({}) =>true
-            errors.sickLeave = {} // We did this for typescript.
+            errors.sickLeave = {} // We did this for typescript{actually for javascript's runtime error :D}.
           errors.sickLeave.endDate = requiredError;
         }
         if (values.healthCheckRating > 2 || values.healthCheckRating < 0) {
-          errors.healthCheckRating = `Score can't be ${values.healthCheckRating}, you must set value as 0, 1 or 2.`;
+          errors.healthCheckRating = `Score can't be ${String(values.healthCheckRating)}, you must set value as 0, 1 or 2.`;
         }
         if (isString(values.healthCheckRating))
           errors.healthCheckRating = `Health score can't be empty.`
@@ -124,7 +126,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
               component={TextFieldComponent}
             />
 
-            {values.type == whatsEntryType.OCCUPATIONAL ? <div>
+            {values.type === whatsEntryType.OCCUPATIONAL ? <div>
               <Field
                 label="Employer Name"
                 placeholder="Dan Abramov"
@@ -144,7 +146,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
                 component={TextFieldComponent}
               />
             </div> : null}
-            {values.type == whatsEntryType.HOSPITAL ? <div>
+            {values.type === whatsEntryType.HOSPITAL ? <div>
               <Field
                 label="Discharge(Date)"
                 placeholder="Specify date of dicharge(Optional)"
@@ -158,7 +160,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
                 component={TextFieldComponent}
               /></div> : null}
             <br></br>
-            {values.type == whatsEntryType.OCCUPATIONAL || values.type == whatsEntryType.HOSPITAL ?
+            {values.type === whatsEntryType.OCCUPATIONAL || values.type === whatsEntryType.HOSPITAL ?
               <DiagnosisSelectionComponent
                 setFieldValue={setFieldValue}
                 setFieldTouched={setFieldTouched}
@@ -177,7 +179,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
               name="description"
               component={TextFieldComponent}
             />
-            {values.type == whatsEntryType.HEALTHCHECK ? <Field
+            {values.type === whatsEntryType.HEALTHCHECK ? <Field
               label="Health Score(or HealthCheckRatingScore)"
               placeholder="Enter from 0, 1 or 2."
               name="healthCheckRating"

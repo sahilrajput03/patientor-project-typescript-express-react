@@ -1,16 +1,17 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BrowserRouter as Router, Redirect, Route, useRouteMatch, useParams, Link, Switch, useHistory } from "react-router-dom";
 import React from "react";
 import axios from "axios";
 import { Container, Table, Button, Icon } from "semantic-ui-react";
 import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
 import AddPatientModal from "../AddPatientModal";
-import { Entry, Patient, HealthCheckEntry, whatsEntryType } from "../types";
+import { allEntriesUnionForSubmit, Entry, HealthCheckEntry, Patient, whatsEntryType } from "../types";
 import { apiBaseUrl } from "../constants";
 import HealthRatingBar from "../components/HealthRatingBar";
 import { useStateValue } from "../state";
-import { AssertionError } from "assert";
 import AddEntryModal from '../AddEntryModal'
+
+// const sap = "asf" // Testing no-unused-vars
 
 const PatientListPage: React.FC = () => {
   const [{ patients, diagnosisCodes }, dispatch] = useStateValue();
@@ -54,21 +55,22 @@ const PatientListPage: React.FC = () => {
       setError(e.response.data.error);
     }
   };
+  // Using Omit keyword in typescript.
   // type EntryFormValues = Omit<Patient, "id" | "entries">;
   // type EntryFormValues = Entry | undefined
 
   // const submitNewEntry = async (values: Entry) => {
-  const submitNewEntry = async (values: { [key: string]: string | number | object }) => {
+  // const submitNewEntry = async (values: { [key: string]: string | number | object }) => {
+  const submitNewEntry = async (values: allEntriesUnionForSubmit) => {
     console.log("All set of values passed to the submit function is ====> ", values)
-    alert(`So we got=> ${JSON.stringify(values)}`)
+    // alert(`So we got=> ${JSON.stringify(values)}`) // Use this debug submit values.
     try {
       const { data: newEntry } = await axios.post<Entry>(
         // The Entry type in the axios.post<Entry> tells that its returning type is Entry for the request, and is destructured to `data`, and then renamed to newEntry variable.
-        `${apiBaseUrl}/patients/${values.id}/entries`,
+        `${apiBaseUrl}/patients/${String(values.id)}/entries`,
         values
       );
-      // dispatch({ type: "ADD_ENTRY_OF_PATIENT", payload: { entry: newEntry, patientId: values.id } });
-      // For the above payload typing
+      dispatch({ type: "ADD_ENTRY_OF_PATIENT", payload: { entry: newEntry, patientId: values.id } });
       closeModalEntry();
     } catch (err) {
       interface errtype {

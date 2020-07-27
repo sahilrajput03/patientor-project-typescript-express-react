@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "eslint-plugin-react": "7.20.3",
     "@hot-loader/react-dom": "^16.13.0",
     "antd": "^4.4.0",
     "axios": "^0.19.2",
@@ -33,10 +34,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lintWindows": "eslint \"./src/**/*.{ts,tsx}\"",
-    "lintOriginal": "eslint './src/**/*.{ts,tsx}'",
-    "lint:fixWindows": "eslint './src/**/*.{ts,tsx}' --fix",
-    "lint:fixOriginal": "eslint \"./src/**/*.{ts,tsx}\" --fix"
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint './src/**/*.{ts,tsx}' --fix",
+    "lintLinux": "eslint './src/**/*.{ts,tsx}'",
+    "lint:fixLinux": "eslint \"./src/**/*.{ts,tsx}\" --fix"
   },
   "browserslist": {
     "production": [

@@ -10,7 +10,6 @@ import { useStateValue, setPatientList, setDiagnosesList } from "./state";
 import { Patient, Diagnosis } from "./types";
 
 import PatientListPage from "./PatientListPage";
-
 const App: React.FC = () => {
   const [, dispatch] = useStateValue();
   React.useEffect(() => {
@@ -39,7 +38,7 @@ const App: React.FC = () => {
     <div className="App">
       <Router>
         <Container>
-          <Header as="h1">Patientor</Header>
+          <Header as="h1">Patientor Program</Header>
           <Button as={Link} to="/" primary>
             Home
           </Button>
