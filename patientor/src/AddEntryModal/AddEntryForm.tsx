@@ -105,8 +105,10 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
         //   errors.description = requiredError;
         // }
         // console.log('validation executed..')
-        console.log('errors (noww) ==>', errors);
 
+        // YIKESS amazing!!!!! JUST FOR THIS MOMENT COMMENTING
+        // console.log('errors (nowws) ==>', errors);
+        // CRAM LINE 111
         return errors;
       }}
     >
@@ -184,7 +186,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
               placeholder="Enter from 0, 1 or 2."
               name="healthCheckRating"
               min={0}
-              max={3}
+              max={2}
               component={NumberFieldComponent}
             /> : null}
             <Grid>{/* This is a SEMANTIC_UI_REACT component. */}

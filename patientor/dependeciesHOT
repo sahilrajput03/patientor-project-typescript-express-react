@@ -1,2 +1,2 @@
-nls @hot-loader/react-dom
-nls react-hot-loader
+nls --saveDev @hot-loader/react-dom
+nls --saveDev react-hot-loader

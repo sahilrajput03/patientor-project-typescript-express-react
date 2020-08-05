@@ -4,19 +4,28 @@
   "private": true,
   "dependencies": {
     "eslint-plugin-react": "7.20.3",
-    "@hot-loader/react-dom": "^16.13.0",
     "antd": "^4.4.0",
     "axios": "^0.19.2",
     "formik": "^2.1.4",
     "react": "^16.11.0",
     "react-dom": "^16.13.1",
-    "react-hot-loader": "^4.12.21",
     "react-router-dom": "^5.2.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.1",
+    "@testing-library/dom": "^7.21.4",
+    "@testing-library/jest-dom": "^5.11.1",
+    "@testing-library/react": "^10.4.7",
+    "@testing-library/user-event": "^12.0.12",
+    "react-refresh": "^0.8.2",
+    "babel-loader": "^8.1.0",
+    "customize-cra": "^1.0.0",
+    "react-app-rewired": "^2.1.6",
+    "react-dev-utils": "^10.2.1",
+    "webpack": "^4.44.0",
     "@types/axios": "^0.14.0",
     "@types/jest": "^24.0.19",
     "@types/node": "^12.11.7",
@@ -30,14 +39,22 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint './src/**/*.{ts,tsx}' --fix",
     "lintLinux": "eslint './src/**/*.{ts,tsx}'",
     "lint:fixLinux": "eslint \"./src/**/*.{ts,tsx}\" --fix"
+  },
+  "commentOlderSahil": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "@hot-loader/react-dom": "^16.13.0",
+    "react-hot-loader": "^4.12.21"
   },
   "browserslist": {
     "production": [

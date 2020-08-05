@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import React from "react";
-import { hot } from 'react-hot-loader/root'
+// import { hot } from 'react-hot-loader/root'
 import axios from "axios";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Button, Divider, Header, Container } from "semantic-ui-react";
@@ -52,5 +52,5 @@ const App: React.FC = () => {
   );
 };
 
-// export default App;
-export default process.env.NODE_ENV === "development" ? hot(App) : App
+export default App; // using original, coz now I'm fast-refresh.
+// export default process.env.NODE_ENV === "development" ? hot(App) : App
