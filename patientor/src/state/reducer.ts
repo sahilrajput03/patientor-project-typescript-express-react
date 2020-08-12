@@ -69,20 +69,29 @@ export const reducer = (state: State, action: Action): State => {
     case "SET_DIAGNOSIS_CODES_LIST":
       return { ...state, diagnosisCodes: [...action.payload] }
     case "ADD_ENTRY_OF_PATIENT":
-      return {
-        ...state,
-        patients: {
-          ...state.patients,
-          [action.payload.patientId]: {
-            ...state.patients[action.payload.patientId],
-            entries: [
-              ...state.patients[action.payload.patientId].entries,
-              action.payload.entry
-            ]
-          }
-        }
-      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const copiedState: State = JSON.parse(JSON.stringify(state))
+      copiedState.patients[action.payload.patientId].entries.push(action.payload.entry)//Actually mutates data.
+      return copiedState
+
+    //Shit code below:
+    // return {
+    //   ...state,
+    //   patients: {
+    //     ...state.patients,
+    //     [action.payload.patientId]: {
+    //       ...state.patients[action.payload.patientId],
+    //       entries: [
+    //         ...state.patients[action.payload.patientId].entries,
+    //         action.payload.entry
+    //       ]
+    //     }
+    //   }
+    // }
     default:
       return state;
   }
 };
+// ────────────────────────────────────────────────────────
+// not needed - eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+// console.log(copiedState.patients[action.payload.patientId].entries.push(action.payload.entry))

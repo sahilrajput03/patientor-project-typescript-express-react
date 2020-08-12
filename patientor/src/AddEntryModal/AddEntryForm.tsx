@@ -171,7 +171,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onSubmit, onCancel, id }) =
               /> : null}
             <Field
               label="Specialist"
-              placeholder="Doctor's Name"
+              placeholder="Doctor's Name Here"
               name="specialist"
               component={TextFieldComponent}
             />

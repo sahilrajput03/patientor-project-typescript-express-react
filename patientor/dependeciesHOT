@@ -1,2 +1,3 @@
+# We don't need to install react-hot-loader coz, its not recommended by # itself to be used. But react-refresh is recommended. Yikess!!! Working cool # that way..!!!
 nls --saveDev @hot-loader/react-dom
 nls --saveDev react-hot-loader
